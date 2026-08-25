@@ -81,8 +81,8 @@ const float RING_ROT_PERIOD_S = 24.0f;  // seconds for one lap of the ring
 
 // --- Standalone mode -------------------------------------------------------
 // The disc is a display piece first: with no controller powered on it still has
-// to run on its own, from cold boot onwards. Both motors turn at a fixed rate
-// and the strip walks a full rainbow around the ring.
+// to run on its own, from cold boot onwards. The two motors turn at the same
+// fixed rate in opposite senses, and the strip walks a full rainbow round.
 const int32_t STANDALONE_STEP_HZ    = 1000;
 const uint16_t STANDALONE_SPREAD    = 65535;  // one full rainbow across the ring
 const float    STANDALONE_ROT_PERIOD_S = 30.0f;  // seconds per hue revolution
@@ -392,8 +392,10 @@ void loop() {
       linked = false;
       Serial.println("Link lost - running standalone.");
     }
+    // Motor 2 runs the opposite way here, and only here. The controller modes
+    // above are untouched by this.
     setMotor(0, STANDALONE_STEP_HZ);
-    setMotor(1, STANDALONE_STEP_HZ);
+    setMotor(1, -STANDALONE_STEP_HZ);
     renderStandalone(dt);
   } else {
     updateMotors(dt);
